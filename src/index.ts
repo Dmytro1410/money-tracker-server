@@ -89,7 +89,7 @@ app.get('/user-agent', (c) => {
 // JSON
 app.get('/api/posts', prettyJSON(), (c) => {
   const posts = [
-    { id: 1, title: 'Good Morning' },
+    { id: 1, title: 'Good Morning Test 1' },
     { id: 2, title: 'Good Afternoon' },
     { id: 3, title: 'Good Evening' },
     { id: 4, title: 'Good Night' }

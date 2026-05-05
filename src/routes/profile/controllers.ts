@@ -1,5 +1,5 @@
 import { Context } from 'hono';
-import { fetchProfile } from '../services/profile';
+import { fetchProfile } from './services';
 
 export const getProfile = async (c: Context) => {
   const supabase = c.get('supabase');

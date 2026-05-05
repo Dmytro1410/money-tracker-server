@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { getProfile } from '../controllers/profile';
+import { getProfile } from './controllers';
 
 const router = new Hono();
 

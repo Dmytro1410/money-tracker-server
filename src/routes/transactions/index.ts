@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { getTransactions } from '../controllers/transactions';
+import { getTransactions } from './controllers';
 
 const router = new Hono();
 

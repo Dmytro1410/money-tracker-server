@@ -1,5 +1,5 @@
 import { Context } from 'hono';
-import { fetchTransactions } from '../services/transactions';
+import { fetchTransactions } from './services';
 
 export const getTransactions = async (c: Context) => {
   const supabase = c.get('supabase');

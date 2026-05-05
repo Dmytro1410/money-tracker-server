@@ -1,10 +1,10 @@
 import { Context } from 'hono';
-import { attemptLogin, attemptLogout } from '../services/auth';
+import { loginUser, logoutUser } from './services';
 
-export const postLogin = async (c: Context) => {
+export const login = async (c: Context) => {
   const supabase = c.get('supabase');
   const body = await c.req.json();
-  const { data, error } = await attemptLogin(supabase, body);
+  const { data, error } = await loginUser(supabase, body);
 
   if (error) {
     console.error('Supabase Error (postLogin):', error);
@@ -24,9 +24,9 @@ export const postLogin = async (c: Context) => {
   return c.json(res);
 };
 
-export const getLogout = async (c: Context) => {
+export const logout = async (c: Context) => {
   const supabase = c.get('supabase');
-  const { error } = await attemptLogout(supabase);
+  const { error } = await logoutUser(supabase);
 
   if (error) {
     console.error('Supabase Error (getLogout):', error);

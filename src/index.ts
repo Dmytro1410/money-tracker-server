@@ -19,9 +19,9 @@ app.use('/api/*', cors({
   credentials: true,
 }));
 
-const baseUrl = '/api';
-
 app.use('*', supabaseMiddleware());
+
+const baseUrl = '/api';
 
 app.route(`${baseUrl}/auth`, authRoutes);
 app.route(`${baseUrl}/profile`, profileRoutes);

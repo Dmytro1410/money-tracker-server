@@ -1,112 +1,32 @@
-import { Hono } from 'hono'
-import { basicAuth } from 'hono/basic-auth'
-import { etag } from 'hono/etag'
-import { cors } from 'hono/cors'
-import { poweredBy } from 'hono/powered-by'
-import { prettyJSON } from 'hono/pretty-json'
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { supabaseMiddleware } from './middleware/supabase';
+import authRoutes from './routes/auth';
+import profileRoutes from './routes/profile';
+import transactionRoutes from './routes/transactions';
+import categoriesRoutes from './routes/categories';
 
-const app = new Hono()
+const app = new Hono();
 
-// Mount Builtin Middleware
-app.use('*', poweredBy())
-app.use('*', cors())
-// app.use('*', logger())
-app.use(
-  '/auth/*',
-  basicAuth({
-    username: 'hono',
-    password: 'acoolproject'
-  })
-)
-app.use('/etag/*', etag())
+const localHost = process.env.LOCALHOST!;
+const appUrl = process.env.APP_URL!;
 
-// Custom Middleware
-// Add Custom Header
-app.use('/hello/*', async (c, next) => {
-  await next()
-  c.header('X-message', 'This is addHeader middleware!')
-})
+app.use('/api/*', cors({
+  origin: [localHost, appUrl],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  exposeHeaders: ['Content-Length'],
+  maxAge: 600,
+  credentials: true,
+}));
 
-// Add X-Response-Time header
-app.use('*', async (c, next) => {
-  const start = Date.now()
-  await next()
-  const ms = Date.now() - start
-  c.header('X-Response-Time', `${ms}ms`)
-})
+app.use('*', supabaseMiddleware());
 
-// Custom Not Found Message
-app.notFound((c) => {
-  return c.text('Custom 404 Not Found', 404)
-})
+const baseUrl = '/api';
 
-// Error handling
-app.onError((err, c) => {
-  console.error(`${err}`)
-  return c.text('Custom Error Message', 500)
-})
+app.route(`${baseUrl}/auth`, authRoutes);
+app.route(`${baseUrl}/profile`, profileRoutes);
+app.route(`${baseUrl}/transactions`, transactionRoutes);
+app.route(`${baseUrl}/categories`, categoriesRoutes);
 
-// Routing
-app.get('/', (c) => c.text('Hono!!'))
-// Use Response object directly
-app.get('/hello', () => new Response('This is /hello'))
-
-// Named parameter
-app.get('/entry/:id', (c) => {
-  const id = c.req.param('id')
-  return c.text(`Your ID is ${id}`)
-})
-
-// Nested route
-const book = new Hono()
-book.get('/', (c) => c.text('List Books'))
-book.get('/:id', (c) => {
-  const id = c.req.param('id')
-  return c.text('Get Book: ' + id)
-})
-book.post('/', (c) => c.text('Create Book'))
-app.route('/book', book)
-
-// Redirect
-app.get('/redirect', (c) => c.redirect('/'))
-// Authentication required
-app.get('/auth/*', (c) => c.text('You are authorized'))
-// ETag
-app.get('/etag/cached', (c) => c.text('Is this cached?'))
-
-// Async
-app.get('/fetch-url', async (c) => {
-  const response = await fetch('https://example.com/')
-  return c.text(`https://example.com/ is ${response.status}`)
-})
-
-// Request headers
-app.get('/user-agent', (c) => {
-  const userAgent = c.req.header('User-Agent')
-  return c.text(`Your UserAgent is ${userAgent}`)
-})
-
-// JSON
-app.get('/api/posts', prettyJSON(), (c) => {
-  const posts = [
-    { id: 1, title: 'Good Morning Test 1' },
-    { id: 2, title: 'Good Afternoon' },
-    { id: 3, title: 'Good Evening' },
-    { id: 4, title: 'Good Night' }
-  ]
-  return c.json(posts)
-})
-// status code
-app.post('/api/posts', (c) => c.json({ message: 'Created!' }, 201))
-// default route
-app.get('/api/*', (c) => c.text('API endpoint is not found', 404))
-
-// Throw Error
-app.get('/error', () => {
-  throw Error('Error has occurred')
-})
-
-// @ts-ignore
-app.get('/type-error', () => 'return not Response instance')
-
-export default app
+export default app;

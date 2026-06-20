@@ -2,10 +2,18 @@
   "name": "hono",
   "type": "module",
   "dependencies": {
+    "@supabase/supabase-js": "^2.104.1",
     "hono": "^4.12.15"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-plugin-hono": "^0.0.1-alpha.4",
+    "eslint-plugin-import": "^2.32.0",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

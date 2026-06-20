@@ -4,6 +4,7 @@ import { supabaseMiddleware } from './middleware/supabase';
 import authRoutes from './routes/auth';
 import profileRoutes from './routes/profile';
 import transactionRoutes from './routes/transactions';
+import categoriesRoutes from './routes/categories';
 
 const app = new Hono();
 
@@ -26,5 +27,6 @@ const baseUrl = '/api';
 app.route(`${baseUrl}/auth`, authRoutes);
 app.route(`${baseUrl}/profile`, profileRoutes);
 app.route(`${baseUrl}/transactions`, transactionRoutes);
+app.route(`${baseUrl}/categories`, categoriesRoutes);
 
 export default app;
